@@ -1,6 +1,6 @@
 <img src="https://user-images.githubusercontent.com/420820/187585158-331400c3-18f3-4673-857e-44efd73c6104.svg" width="200" alt="Logo" />
 
-# Orbital Sync
+# Orbital Sync (POC) Trusted Certs
 
 [![Tests](https://img.shields.io/github/actions/workflow/status/mattwebbio/orbital-sync/ci.yml?branch=master&label=tests&style=for-the-badge)](https://github.com/mattwebbio/orbital-sync/actions/workflows/ci.yml?query=branch%3Amaster)
 [![Coverage](https://img.shields.io/codecov/c/github/mattwebbio/orbital-sync/master?style=for-the-badge)](https://app.codecov.io/gh/mattwebbio/orbital-sync/)
