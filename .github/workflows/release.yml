@@ -1,9 +1,7 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - '*'
+  push
 
 jobs:
   docker:
@@ -20,21 +18,14 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
-          username: mattwebbio
+          username: samuelbartik
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate tags
         id: docker_tags
         uses: docker/metadata-action@v3
         with:
           images: |
-            mattwebbio/orbital-sync
-            ghcr.io/mattwebbio/orbital-sync
+            samuelbartik/orbital-sync
           tags: |
             type=schedule
             type=ref,event=branch
@@ -57,18 +48,5 @@ jobs:
       - name: Update DockerHub description
         uses: peter-evans/dockerhub-description@v3
         with:
-          username: mattwebbio
+          username: samuelbartik
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-  npm:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18.x'
-      - run: yarn
-      - run: yarn tsc
-      - run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
-      - run: yarn publish --registry https://npm.pkg.github.com
-      - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-      - run: yarn publish --registry https://registry.npmjs.org
