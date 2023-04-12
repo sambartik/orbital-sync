@@ -11,7 +11,6 @@ import nodeFetch, {
 } from 'node-fetch';
 import { parse } from 'node-html-parser';
 import tls from 'tls';
-import urlParse from 'url';
 import type { Host } from './config.js';
 import { Config } from './config.js';
 import { Log } from './log.js';
