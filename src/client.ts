@@ -11,6 +11,7 @@ import nodeFetch, {
 } from 'node-fetch';
 import { parse } from 'node-html-parser';
 import tls from 'tls';
+import urlParse from 'url';
 import type { Host } from './config.js';
 import { Config } from './config.js';
 import { Log } from './log.js';
@@ -18,22 +19,26 @@ import { ErrorNotification } from './notify.js';
 
 const customCAPath = "/trusted-certs";
 const trustedCAsFetch = (url: RequestInfo, options: RequestInit = {}): Promise<Response> => {
-  let agent: https.Agent;
+  if(typeof url === "string" && url.startsWith("http://")) {
+    return nodeFetch(url, {...options});
+  }
+
+  let httpsAgent: https.Agent;
   try {
     const certFiles = fs.readdirSync(customCAPath);
     if (certFiles.length > 0) {
       const suppliedCerts = certFiles.map(certFile => fs.readFileSync(`${customCAPath}/${certFile}`));
-      agent = new https.Agent({ ca: [...tls.rootCertificates, ...suppliedCerts] });
+      httpsAgent = new https.Agent({ ca: [...tls.rootCertificates, ...suppliedCerts] });
     } else {
       Log.verbose(`No custom certificates found in directory: ${customCAPath}`);
-      agent = new https.Agent();
+      httpsAgent = new https.Agent();
     }
   } catch (error) {
     Log.error(`Error loading custom certificates: ${error}`);
-    agent = new https.Agent();
+    httpsAgent = new https.Agent();
   }
 
-  return nodeFetch(url, { agent, ...options });
+  return nodeFetch(url, { agent: httpsAgent, ...options });
 };
 
 export class Client {
